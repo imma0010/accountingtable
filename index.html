@@ -25,7 +25,7 @@
 
             function submit() {
                 var outputHTML = "";
-                var rate = document.getElementById("rate").value / 100;
+                var rate = document.getElementById("rate").value;
                 var inityear = document.getElementById("inityear").value;
                 var lastyear = document.getElementById("lastyear").value;
                 console.log("Interest Rate: " + rate);
@@ -36,8 +36,8 @@
                 outputHTML += "<tr><td>Year</td><td>PVIF at " + rate + "%</td></tr>"
                 for (var i = inityear; i <= lastyear; i++) {
                     outputHTML += "<tr>";
-                    outputHTML += "<td>" + i + "</td><td>" + calculatePVIF(rate, i) + "</td>";
-                    console.log("Year: " + i + "  PVIF: " + calculatePVIF(rate, i));
+                    outputHTML += "<td>" + i + "</td><td>" + calculatePVIF(rate / 100, i) + "</td>";
+                    console.log("Year: " + i + "  PVIF: " + calculatePVIF(rate / 100, i));
                     outputHTML += "</tr>";
                 }
                 outputHTML += "</table>";

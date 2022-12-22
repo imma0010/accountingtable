@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting Tables</title>
+</head>
+
+<body>
+    <div class="container">
+        <form>
+            <label for="rate">Rate of Interest</label>
+            <input type="number" id="rate">
+            <label for="inityear">Initial Year</label>
+            <input type="number" id="inityear">
+            <label for="lastyear">Last Year</label>
+            <input type="number" id="lastyear">
+            <input type="button" value="Calculate PVIF" id="calculate">
+        </form>
+        <div id="output"></div>
+        <script>
+            document.getElementById("calculate").addEventListener("click", submit);
+
+            function submit() {
+                var outputHTML = "";
+                var rate = document.getElementById("rate").value;
+                var inityear = document.getElementById("inityear").value;
+                var lastyear = document.getElementById("lastyear").value;
+
+                outputHTML += "<table id='table'>";
+                outputHTML += "<tr><td>Year</td><td>Cash Flows</td><td>PVIF at " + rate + "%</td><td>PV</td></tr>"
+                for (var i = inityear; i <= lastyear; i++) {
+                    outputHTML += "<tr>";
+                    outputHTML += "<td>" + i + "</td><td><input type='number' oninput='calculatePV(" + i + ")'></td><td>" + calculatePVIF(rate / 100, i) + "</td><td></td>";
+                    // console.log("Year: " + i + "  PVIF: " + calculatePVIF(rate / 100, i));
+                    outputHTML += "</tr>";
+                }
+                outputHTML += "<tr><td></td><td></td><td>TPV</td><td></td></tr>";
+                outputHTML += "<tr><td></td><td></td><td>Less: -NCO</td><td><input type='number' oninput='calculateNPV()'></td></tr>";
+                outputHTML += "<tr><td></td><td></td><td>NPV</td><td></td></tr>";
+                outputHTML += "</table>";
+
+                document.getElementById("output").innerHTML = outputHTML;
+            }
+
+            function calculatePVIF(rate, n) {
+                var pvif = 1 / (1 + rate) ** n;
+                return pvif.toFixed(4)
+            }
+
+            function calculatePV(n) {
+                var rate = document.getElementById("rate").value;
+                var cf = event.target.value;
+                var lastyear = document.getElementById("lastyear").value;
+
+                // console.log("Rate: " + rate);
+                // console.log("Cash Flow: " + cf);
+                // console.log("Year: " + n);
+                // console.log("PVIF: " + calculatePVIF(rate / 100, n));
+                document.getElementById("table").rows[n].cells[3].innerHTML = (calculatePVIF(rate / 100, n) * cf).toFixed(2);
+
+                document.getElementById("table").rows[parseInt(lastyear) + 1].cells[3].innerHTML = calculateTPV();
+            }
+
+            function calculateTPV() {
+                var sum = 0;
+                var inityear = document.getElementById("inityear").value;
+                var lastyear = document.getElementById("lastyear").value;
+                for (var i = inityear; i <= lastyear; i++) {
+                    if (document.getElementById("table").rows[i].cells[3].textContent != "") {
+                        sum += parseFloat(document.getElementById("table").rows[i].cells[3].textContent);
+                    }
+                }
+                // console.log(document.getElementById("table").rows.length);
+
+                return sum.toFixed(2);
+            }
+
+            function calculateNPV() {
+                var nco = event.target.value;
+                var row = document.getElementById("table").rows.length;
+                console.log("Table Row Count: " + row);
+                document.getElementById("table").rows[parseInt(row) - 1].cells[3].innerHTML = (calculateTPV() - parseFloat(nco)).toFixed(2);
+            }
+        </script>
+    </div>
+</body>
+
+</html>
