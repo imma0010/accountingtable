@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting Tables</title>
+</head>
+
+<body>
+    <div class="container">
+        <form>
+            <label for="rate">Rate of Interest</label>
+            <input type="number" id="rate">
+            <label for="inityear">Initial Year</label>
+            <input type="number" id="inityear">
+            <label for="lastyear">Last Year</label>
+            <input type="number" id="lastyear">
+            <input type="button" value="Calculate PVIF" id="calculate">
+        </form>
+        <div id="output"></div>
+        <script>
+            document.getElementById("calculate").addEventListener("click", submit);
+
+            function submit() {
+                var outputHTML = "";
+                var rate = document.getElementById("rate").value / 100;
+                var inityear = document.getElementById("inityear").value;
+                var lastyear = document.getElementById("lastyear").value;
+                console.log("Interest Rate: " + rate);
+                console.log("Initial Year: " + inityear);
+                console.log("Last Year: " + lastyear);
+
+                outputHTML += "<table>";
+                outputHTML += "<tr><td>Year</td><td>PVIF at " + rate + "%</td></tr>"
+                for (var i = inityear; i <= lastyear; i++) {
+                    outputHTML += "<tr>";
+                    outputHTML += "<td>" + i + "</td><td>" + calculatePVIF(rate, i) + "</td>";
+                    console.log("Year: " + i + "  PVIF: " + calculatePVIF(rate, i));
+                    outputHTML += "</tr>";
+                }
+                outputHTML += "</table>";
+
+                document.getElementById("output").innerHTML = outputHTML;
+            }
+
+            function calculatePVIF(rate, n) {
+                var pvif = 1 / (1 + rate) ** n;
+                return pvif.toFixed(4)
+            }
+        </script>
+    </div>
+</body>
+
+</html>
